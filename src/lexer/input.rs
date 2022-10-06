@@ -9,7 +9,7 @@ pub struct Input<'a> {
 impl<'a> Input<'a> {
     pub fn new(input: &'a str) -> Self {
         Self {
-            chars: input.chars()
+            chars: input.chars(),
         }
     }
 
@@ -19,6 +19,22 @@ impl<'a> Input<'a> {
 
     pub fn advance(&mut self) -> char {
         self.chars.next().unwrap_or(EOF)
+    }
+
+    pub fn advance_while(&mut self, mut predicate: impl FnMut(char) -> bool) {
+        while self.peek() != EOF && predicate(self.peek()) {
+            self.advance();
+        }
+    }
+
+    pub fn take_while(&mut self, mut predicate: impl FnMut(char) -> bool) -> String {
+        let mut ret: Vec<char> = Vec::new();
+        while self.peek() != EOF && predicate(self.peek()) {
+            ret.push(self.peek());
+            self.advance();
+        }
+
+        ret.into_iter().collect()
     }
 }
 
